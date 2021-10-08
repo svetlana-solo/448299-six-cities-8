@@ -1,6 +1,12 @@
+import Logo from '../logo/logo';
+
 function ErrorPage(): JSX.Element {
   return(
-    <h1>404 Not Found</h1>
+    <div className="error">
+      <h1>404 Not Found</h1>
+      <Logo />
+    </div>
+
   );
 }
 
