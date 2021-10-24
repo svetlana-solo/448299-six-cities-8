@@ -1,31 +1,16 @@
 import {useState} from 'react';
-import {Offer, Offers} from '../../types/offer';
-import OfferList from '../offer-list/offer-list';
+import {Offers} from '../../types/offer';
+import OffersList from '../offers-list/offers-list';
 import Header from '../header/header';
 import Map  from '../map/map';
 
 type MainPageProps = {
-  offersCount: number;
   offers: Offers;
 }
 
 function MainPage(props: MainPageProps): JSX.Element {
-  const offersCount = props.offersCount;
   const offers = props.offers;
-
-  const [selectedOffer, setSelectedOffer] = useState<Offer | undefined>(undefined);
-
-  const city = offers[0].city;
-
-  const onOfferListMouseEnter = (offerId: string) => {
-    const currentPoint = offers.find((offer) => offer.id === offerId);
-    setSelectedOffer(currentPoint);
-  };
-
-  const onOfferListMouseLeave = () => {
-    setSelectedOffer(undefined);
-  };
-
+  const [selectedOffer, setSelectedOffer] = useState<string | null>(null);
 
   return (
     <div className ="page page--gray page--main">
@@ -71,9 +56,22 @@ function MainPage(props: MainPageProps): JSX.Element {
         </div>
         <div className="cities">
           <div className="cities__places-container container">
-            <OfferList offersCount={offersCount} offers={offers} onOfferListMouseEnter={onOfferListMouseEnter} onOfferListMouseLeave={onOfferListMouseLeave} />
+            <section className="cities__places places">
+              <h2 className="visually-hidden">Places</h2>
+              <b className="places__found">{offers.length} places to stay in Amsterdam</b>
+              <form className="places__sorting" action="#" method="get">
+                <span className="places__sorting-caption">Sort by</span>
+                <span className="places__sorting-type" tabIndex={0}>
+                  Popular
+                  <svg className="places__sorting-arrow" width="7" height="4">
+                    <use xlinkHref="#icon-arrow-select"></use>
+                  </svg>
+                </span>
+              </form>
+              <OffersList offers={offers} onCardFocus={setSelectedOffer} />
+            </section>
             <div className="cities__right-section">
-              <Map cityLocation={city.location} points={offers.map((offer) => ({title: offer.title, location: offer.location}))} selectedPoint={selectedOffer} />
+              <Map city={offers[0].city.location} offers={offers} selectedOffer={selectedOffer} />
             </div>
           </div>
         </div>
