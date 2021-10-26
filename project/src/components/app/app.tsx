@@ -10,14 +10,14 @@ import Room from '../room/room';
 import Error from '../error-page/error-page';
 import PrivateRoute from '../private-route/private-route';
 
-function App(props: AppScreenProps): JSX.Element {
-  const offersCount = props.offersCount;
-  const offers = props.offers;
+function App({offers, reviews}: AppScreenProps): JSX.Element {
+
+
   return  (
     <BrowserRouter>
       <Switch>
         <Route exact path={AppRoute.Main}>
-          <Main offersCount={offersCount} offers={offers} />
+          <Main offers={offers} />
         </Route>
 
         <Route exact path={AppRoute.SignIn}>
@@ -33,7 +33,12 @@ function App(props: AppScreenProps): JSX.Element {
         </PrivateRoute>
 
         <Route exact path={`${AppRoute.Room}/:id`}>
-          <Room />
+          <Room
+            reviews={reviews}
+            offers={offers}
+            neighbours={offers.slice(1,4)}
+            authorizationStatus={AuthorizationStatus.Auth}
+          />
         </Route>
 
         <Route>

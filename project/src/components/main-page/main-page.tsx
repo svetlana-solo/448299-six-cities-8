@@ -1,15 +1,16 @@
+import {useState} from 'react';
 import {Offers} from '../../types/offer';
-import OfferList from '../offer-list/offer-list';
+import OffersList from '../offers-list/offers-list';
 import Header from '../header/header';
+import Map  from '../map/map';
 
 type MainPageProps = {
-  offersCount: number;
   offers: Offers;
 }
 
 function MainPage(props: MainPageProps): JSX.Element {
-  const offersCount = props.offersCount;
   const offers = props.offers;
+  const [selectedOffer, setSelectedOffer] = useState<string | null>(null);
 
   return (
     <div className ="page page--gray page--main">
@@ -53,8 +54,27 @@ function MainPage(props: MainPageProps): JSX.Element {
             </ul>
           </section>
         </div>
-        <OfferList offersCount={offersCount} offers={offers}/>
-
+        <div className="cities">
+          <div className="cities__places-container container">
+            <section className="cities__places places">
+              <h2 className="visually-hidden">Places</h2>
+              <b className="places__found">{offers.length} places to stay in Amsterdam</b>
+              <form className="places__sorting" action="#" method="get">
+                <span className="places__sorting-caption">Sort by</span>
+                <span className="places__sorting-type" tabIndex={0}>
+                  Popular
+                  <svg className="places__sorting-arrow" width="7" height="4">
+                    <use xlinkHref="#icon-arrow-select"></use>
+                  </svg>
+                </span>
+              </form>
+              <OffersList offers={offers} onCardFocus={setSelectedOffer} />
+            </section>
+            <div className="cities__right-section">
+              <Map city={offers[0].city.location} offers={offers} selectedOffer={selectedOffer} />
+            </div>
+          </div>
+        </div>
       </main>
     </div>
   );
