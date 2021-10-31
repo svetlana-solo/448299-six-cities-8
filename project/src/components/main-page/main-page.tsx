@@ -1,16 +1,62 @@
 import {useState} from 'react';
-import {Offers} from '../../types/offer';
 import OffersList from '../offers-list/offers-list';
 import Header from '../header/header';
 import Map  from '../map/map';
+import CitiesList from '../cities-list/cities-list';
+import Sort from '../sort/sort';
+import {connect, ConnectedProps} from 'react-redux';
+import {State} from '../../types/state';
+import {SortOption} from '../../const';
+import {Offer} from '../../types/offer';
+
+const getCitiesLocation = (city:string) => {
+  switch(city){
+    case 'Paris':{
+      return {latitude: 48.864716,longitude: 2.349014,zoom: 10};
+    }
+    case 'Amsterdam':{
+      return {latitude: 52.3909553943508,longitude: 4.85309666406198,zoom: 10};
+    }
+    default :{
+      return {latitude: 48.864716,longitude: 2.349014,zoom: 10};
+    }
+  }
+};
+
+const getSortedOffers = (currentSortOption : string, offers: Offer[]) => {
+  switch(currentSortOption){
+    case SortOption.PriceHighToLow: {
+      return offers.slice().sort((offerA, offerB) => offerB.price - offerA.price);
+    }
+    case SortOption.PriceLowToHigh: {
+      return offers.slice().sort((offerA, offerB) => offerA.price - offerB.price);
+    }
+    case SortOption.TopRatedFirst: {
+      return offers.slice().sort((offerA, offerB) => offerB.rating - offerA.rating);
+    }
+    default: {
+      return offers;
+    }
+  }
+};
 
 type MainPageProps = {
-  offers: Offers;
+  offers: Offer[],
 }
 
-function MainPage(props: MainPageProps): JSX.Element {
-  const offers = props.offers;
+const mapStateToProps = ({currentCity, currentSortOption}:State) => ({
+  currentCity,
+  currentSortOption,
+});
+
+const connector = connect(mapStateToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+type ConnectedComponentProps = PropsFromRedux & MainPageProps;
+
+function MainPage({offers, currentCity, currentSortOption}: ConnectedComponentProps): JSX.Element {
   const [selectedOffer, setSelectedOffer] = useState<string | null>(null);
+  const sortedOffers = getSortedOffers(currentSortOption, offers);
 
   return (
     <div className ="page page--gray page--main">
@@ -19,59 +65,18 @@ function MainPage(props: MainPageProps): JSX.Element {
       <main className="page__main page__main--index">
         <h1 className="visually-hidden">Cities</h1>
         <div className="tabs">
-          <section className="locations container">
-            <ul className="locations__list tabs__list">
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="/">
-                  <span>Paris</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="/">
-                  <span>Cologne</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="/">
-                  <span>Brussels</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item tabs__item--active" href="/">
-                  <span>Amsterdam</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="/">
-                  <span>Hamburg</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="/">
-                  <span>Dusseldorf</span>
-                </a>
-              </li>
-            </ul>
-          </section>
+          <CitiesList currentCity={currentCity}/>
         </div>
         <div className="cities">
           <div className="cities__places-container container">
             <section className="cities__places places">
               <h2 className="visually-hidden">Places</h2>
-              <b className="places__found">{offers.length} places to stay in Amsterdam</b>
-              <form className="places__sorting" action="#" method="get">
-                <span className="places__sorting-caption">Sort by</span>
-                <span className="places__sorting-type" tabIndex={0}>
-                  Popular
-                  <svg className="places__sorting-arrow" width="7" height="4">
-                    <use xlinkHref="#icon-arrow-select"></use>
-                  </svg>
-                </span>
-              </form>
-              <OffersList offers={offers} onCardFocus={setSelectedOffer} />
+              <b className="places__found">{offers.length} places to stay in {currentCity}</b>
+              <Sort />
+              <OffersList offers={sortedOffers} onCardFocus={setSelectedOffer} />
             </section>
             <div className="cities__right-section">
-              <Map city={offers[0].city.location} offers={offers} selectedOffer={selectedOffer} />
+              <Map city={getCitiesLocation(currentCity)} offers={offers} selectedOffer={selectedOffer} />
             </div>
           </div>
         </div>
@@ -80,4 +85,5 @@ function MainPage(props: MainPageProps): JSX.Element {
   );
 }
 
-export default MainPage;
+export {MainPage};
+export default connector(MainPage);
