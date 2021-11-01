@@ -1,16 +1,22 @@
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import {AppRoute, AuthorizationStatus} from '../../const';
-
-import {AppScreenProps} from './app-types';
-
 import Main from '../main-page/main-page';
 import Favorites from '../favorites-page/favorites-page';
 import Login from '../sign-in/sign-in';
 import Room from '../room/room';
 import Error from '../error-page/error-page';
 import PrivateRoute from '../private-route/private-route';
+import {State} from '../../types/state';
+import {connect, ConnectedProps} from 'react-redux';
 
-function App({offers, reviews}: AppScreenProps): JSX.Element {
+
+const mapStateToProps = ({offers, reviews}:State) => ({offers, reviews});
+
+const connector = connect(mapStateToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+function App({offers, reviews}: PropsFromRedux): JSX.Element {
 
 
   return  (
@@ -50,4 +56,5 @@ function App({offers, reviews}: AppScreenProps): JSX.Element {
   );
 }
 
-export default App;
+export default connector(App);
+export {App};
