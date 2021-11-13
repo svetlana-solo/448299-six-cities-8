@@ -12,13 +12,24 @@ import {connect, ConnectedProps} from 'react-redux';
 import {ThunkAppDispatch} from '../../types/action';
 import {State} from '../../types/state';
 import {useEffect} from 'react';
+import {Offer} from '../../types/offer';
 
-const mapStateToProps = ({currentOffer, nearbyOffers, reviews, authorizationStatus}:State) => ({
-  currentOffer,
-  nearbyOffers,
-  reviews,
-  authorizationStatus,
-});
+const mapStateToProps = ({offers, currentOffer, nearbyOffers, reviews, authorizationStatus}:State) => {
+  const currentOfferValue = offers.find(({id}) => currentOffer === id);
+  const nearbyOffersValue: Offer[] = nearbyOffers.reduce<Offer[]>((acc, nearbyOfferId) => {
+    const offer = offers.find(({id}) => nearbyOfferId === id);
+    if (offer) {
+      acc.push(offer);
+    }
+    return acc;
+  }, []);
+  return {
+    currentOffer: currentOfferValue,
+    nearbyOffers: nearbyOffersValue,
+    reviews,
+    authorizationStatus,
+  };
+};
 
 const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
   setCurrentOfferAction(currentRoomId: number) {

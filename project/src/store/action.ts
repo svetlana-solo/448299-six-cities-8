@@ -11,7 +11,7 @@ export const setCity = (currentCity:string) => ({
 export const setOffers = (offers: Offer[]) => ({
   type: ActionType.SetOffers,
   payload: {
-    offers: offers,
+    offers,
   },
 } as const);
 

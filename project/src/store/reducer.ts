@@ -5,7 +5,7 @@ import {City, SortOption, ActionType, AuthorizationStatus} from '../const';
 const initialState : State = {
   currentCity: City.Paris,
   offers: [],
-  currentOffer : null,
+  currentOffer: null,
   nearbyOffers: [],
   reviews: [],
   currentSortOption: SortOption.Popular,
@@ -25,10 +25,10 @@ export const reducer = (state : State = initialState, action: Actions): State =>
       return {...state, currentSortOption: action.payload.currentSortOption};
     }
     case ActionType.SetCurrentOffer: {
-      return {...state, currentOffer: action.payload.offer};
+      return {...state, currentOffer: action.payload.offer.id};
     }
     case ActionType.SetNearbyOffers: {
-      return {...state, nearbyOffers: action.payload.offers};
+      return {...state, nearbyOffers: action.payload.offers.map(({id}) => id)};
     }
     case ActionType.SetReviews: {
       return {...state, reviews: action.payload.reviews};

@@ -4,8 +4,8 @@ import {AuthorizationStatus} from '../const';
 export type State = {
   currentCity: string,
   offers: Offer[],
-  currentOffer: Offer | null,
-  nearbyOffers: Offer[],
+  currentOffer: number | null,
+  nearbyOffers: number[],
   reviews: Review[],
   currentSortOption: string,
   authorizationStatus: AuthorizationStatus,
