@@ -55,7 +55,7 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 type ConnectedComponentProps = PropsFromRedux & MainPageProps;
 
 function MainPage({offers, currentCity, currentSortOption}: ConnectedComponentProps): JSX.Element {
-  const [selectedOffer, setSelectedOffer] = useState<string | null>(null);
+  const [selectedOffer, setSelectedOffer] = useState<number | null>(null);
   const sortedOffers = getSortedOffers(currentSortOption, offers);
 
   return (

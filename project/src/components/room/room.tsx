@@ -1,22 +1,47 @@
 import {useParams} from 'react-router-dom';
-import {Reviews, Offers} from '../../types/offer';
-import Error from '../error-page/error-page';
+import {getRating} from '../../utils';
 import Header from '../header/header';
-import Review from '../review/review';
+import ReviewsList from '../reviews-list/reviews-list';
+import ReviewForm from '../review-form/review-form';
 import Map from '../map/map';
 import OffersList from '../offers-list/offers-list';
+import Loading from '../loading/loading';
 import {AuthorizationStatus} from '../../const';
+import {fetchCurrentOfferAction, fetchCommentsAction, fetchNearbyOffersAction} from '../../store/api-actions';
+import {connect, ConnectedProps} from 'react-redux';
+import {ThunkAppDispatch} from '../../types/action';
+import {State} from '../../types/state';
+import {useEffect} from 'react';
+import {Offer} from '../../types/offer';
 
-type RoomProps = {
-  offers: Offers,
-  reviews: Reviews,
-  neighbours: Offers,
-  authorizationStatus: AuthorizationStatus,
-}
+const mapStateToProps = ({offers, currentOffer, nearbyOffers, reviews, authorizationStatus}:State) => {
+  const currentOfferValue = offers.find(({id}) => currentOffer === id);
+  const nearbyOffersValue: Offer[] = nearbyOffers.reduce<Offer[]>((acc, nearbyOfferId) => {
+    const offer = offers.find(({id}) => nearbyOfferId === id);
+    if (offer) {
+      acc.push(offer);
+    }
+    return acc;
+  }, []);
+  return {
+    currentOffer: currentOfferValue,
+    nearbyOffers: nearbyOffersValue,
+    reviews,
+    authorizationStatus,
+  };
+};
 
-function PremiumMarker() {
-  return <div className="property__mark"><span>Premium</span></div>;
-}
+const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
+  setCurrentOfferAction(currentRoomId: number) {
+    dispatch(fetchCurrentOfferAction(currentRoomId));
+    dispatch(fetchCommentsAction(currentRoomId));
+    dispatch(fetchNearbyOffersAction(currentRoomId));
+  },
+});
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
 
 function ApartmentPicture({src}: {src: string}) {
   return (
@@ -30,18 +55,22 @@ function Good({goodName}: {goodName: string}) {
   return <li className="property__inside-item">{goodName}</li>;
 }
 
-function Room({offers, reviews, neighbours, authorizationStatus}: RoomProps): JSX.Element {
+function Room({currentOffer, nearbyOffers, reviews, authorizationStatus, setCurrentOfferAction}: PropsFromRedux): JSX.Element {
 
   const params: {id: string} = useParams();
-  const id = params.id;
-  const currentOffer = offers.find((offer)=> offer.id === id);
+  const currentRoomId = Number(params.id);
+  const currentRoom = currentOffer;
 
+  useEffect(()=>{
+    setCurrentOfferAction(currentRoomId);
+  }, [currentRoomId, setCurrentOfferAction]);
 
-  if (!currentOffer) {
-    return <Error/>;
+  if(!currentRoom || currentRoom.id !== currentRoomId){
+    return <Loading />;
   }
 
-  const {rating, title, description, host, isPremium, isFavorite, price, type, bedrooms, maxAdults, goods, images, city} = currentOffer;
+  const {rating, title, description, host, isPremium, isFavorite, price, type, bedrooms, maxAdults, goods, images, city} = currentRoom;
+
 
   return(
     <div className="page">
@@ -57,7 +86,12 @@ function Room({offers, reviews, neighbours, authorizationStatus}: RoomProps): JS
           </div>
           <div className="property__container container">
             <div className="property__wrapper">
-              {isPremium ? <PremiumMarker /> : null}
+              {
+                isPremium &&
+                  <div className="property__mark">
+                    <span>Premium</span>
+                  </div>
+              }
               <div className="property__name-wrapper">
                 <h1 className="property__name">
                   {title}
@@ -71,7 +105,7 @@ function Room({offers, reviews, neighbours, authorizationStatus}: RoomProps): JS
               </div>
               <div className="property__rating rating">
                 <div className="property__stars rating__stars">
-                  <span style={{width: `${20*rating}%`}}></span>
+                  <span style={{width: getRating(rating)}}></span>
                   <span className="visually-hidden">Rating</span>
                 </div>
                 <span className="property__rating-value rating__value">{rating }</span>
@@ -106,9 +140,10 @@ function Room({offers, reviews, neighbours, authorizationStatus}: RoomProps): JS
                   <span className="property__user-name">
                     {host.name}
                   </span>
-                  <span className="property__user-status">
-                    {host.isPro ? 'Pro' : ''}
-                  </span>
+                  {
+                    host.isPro &&
+                    <span className="property__user-status">Pro</span>
+                  }
                 </div>
                 <div className="property__description">
                   <p className="property__text">
@@ -116,15 +151,18 @@ function Room({offers, reviews, neighbours, authorizationStatus}: RoomProps): JS
                   </p>
                 </div>
               </div>
-              <Review reviews={reviews} authorizationStatus = {authorizationStatus} />
+              <section className="property__reviews reviews">
+                <ReviewsList reviews={reviews}/>
+                {authorizationStatus === AuthorizationStatus.Auth && <ReviewForm />}
+              </section>
             </div>
           </div>
-          <Map city={city.location} offers={neighbours} isRoomMap/>
+          <Map city={city.location} offers={nearbyOffers} isRoomMap/>
         </section>
         <div className="container">
           <section className="near-places places">
             <h2 className="near-places__title">Other places in the neighbourhood</h2>
-            <OffersList offers={neighbours} isRoomOffersList/>
+            <OffersList offers={nearbyOffers} isRoomOffersList/>
           </section>
         </div>
       </main>
@@ -132,4 +170,5 @@ function Room({offers, reviews, neighbours, authorizationStatus}: RoomProps): JS
   );
 }
 
-export default Room;
+export {Room};
+export default connector(Room);

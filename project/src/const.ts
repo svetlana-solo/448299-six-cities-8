@@ -13,9 +13,21 @@ export enum AuthorizationStatus {
 
 export enum ActionType {
   SetCity = 'main/set-city',
-  SetOffers = 'main/set-offers',
+  SetOffers = 'data/set-offers',
   SetSortOption = 'main/set-sort-option',
   SetReviews = 'room/set-reviews',
+  SetCurrentOffer = 'room/set-current-offer',
+  SetNearbyOffers = 'room/set-nearby-offers',
+  RequireAuthorization = 'user/require-authorization',
+  RequireLogout = 'user/require-logout',
+}
+
+export enum APIRoute {
+  Offers = '/hotels',
+  Login = '/login',
+  Logout = '/logout',
+  Comments = '/comments',
+  Nearby = '/nearby',
 }
 
 export enum SortOption {
