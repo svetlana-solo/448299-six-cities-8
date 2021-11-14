@@ -8,6 +8,7 @@ import {connect, ConnectedProps} from 'react-redux';
 import {State} from '../../types/state';
 import {SortOption} from '../../const';
 import {Offer} from '../../types/offer';
+import {getCurrentSortOption, getCurrentCity} from '../../store/main-page/selectors';
 
 const getCitiesLocation = (city:string) => {
   switch(city){
@@ -44,9 +45,9 @@ type MainPageProps = {
   offers: Offer[],
 }
 
-const mapStateToProps = ({MAIN}:State) => ({
-  currentCity: MAIN.currentCity,
-  currentSortOption: MAIN.currentSortOption,
+const mapStateToProps = (state : State) => ({
+  currentCity: getCurrentCity(state),
+  currentSortOption: getCurrentSortOption(state),
 });
 
 const connector = connect(mapStateToProps);

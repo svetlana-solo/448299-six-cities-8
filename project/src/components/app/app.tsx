@@ -10,15 +10,16 @@ import Loading from '../loading/loading';
 import browserHistory from '../../browser-history';
 import {State} from '../../types/state';
 import {connect, ConnectedProps} from 'react-redux';
-
+import {getAuthorizationStatus} from '../../store/user-status/selectors';
+import {getOffers, getLoadedDataStatus} from '../../store/data-offers/selectors';
 
 const isCheckedAuth = (authorizationStatus: AuthorizationStatus): boolean =>
   authorizationStatus === AuthorizationStatus.Unknown;
 
-const mapStateToProps = ({DATA, USER}:State) => ({
-  offers: DATA.offers,
-  authorizationStatus: USER.authorizationStatus,
-  isDataLoaded: DATA.isDataLoaded,
+const mapStateToProps = (state : State) => ({
+  offers: getOffers(state),
+  authorizationStatus: getAuthorizationStatus(state),
+  isDataLoaded: getLoadedDataStatus(state),
 });
 
 const connector = connect(mapStateToProps);
