@@ -15,10 +15,10 @@ import {connect, ConnectedProps} from 'react-redux';
 const isCheckedAuth = (authorizationStatus: AuthorizationStatus): boolean =>
   authorizationStatus === AuthorizationStatus.Unknown;
 
-const mapStateToProps = ({offers, reviews, authorizationStatus, isDataLoaded}:State) => ({
-  offers,
-  authorizationStatus,
-  isDataLoaded,
+const mapStateToProps = ({DATA, USER}:State) => ({
+  offers: DATA.offers,
+  authorizationStatus: USER.authorizationStatus,
+  isDataLoaded: DATA.isDataLoaded,
 });
 
 const connector = connect(mapStateToProps);
@@ -38,7 +38,7 @@ function App({offers, authorizationStatus, isDataLoaded}: PropsFromRedux): JSX.E
         </Route>
 
         <Route exact path={AppRoute.SignIn}>
-          <SignIn />
+          render={() => <SignIn />}
         </Route>
 
         <PrivateRoute
@@ -52,7 +52,7 @@ function App({offers, authorizationStatus, isDataLoaded}: PropsFromRedux): JSX.E
           <Room/>
         </Route>
 
-        <Route>
+        <Route path={AppRoute.Error}>
           <Error />
         </Route>
 

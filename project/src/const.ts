@@ -3,6 +3,7 @@ export enum AppRoute {
   SignIn = '/login',
   Favorites = '/favorites',
   Room = '/offer/:id',
+  Error = '/404',
 }
 
 export enum AuthorizationStatus {
@@ -12,14 +13,14 @@ export enum AuthorizationStatus {
 }
 
 export enum ActionType {
-  SetCity = 'main/set-city',
-  SetOffers = 'data/set-offers',
-  SetSortOption = 'main/set-sort-option',
-  SetReviews = 'room/set-reviews',
-  SetCurrentOffer = 'room/set-current-offer',
-  SetNearbyOffers = 'room/set-nearby-offers',
-  RequireAuthorization = 'user/require-authorization',
-  RequireLogout = 'user/require-logout',
+  SetOffers = 'data-offers/set-offers',
+  SetCity = 'main-page/set-city',
+  SetSortOption = 'main-page/set-sort-option',
+  SetReviews = 'room-page/set-reviews',
+  SetCurrentOffer = 'room-page/set-current-offer',
+  SetNearbyOffers = 'room-page/set-nearby-offers',
+  RequireAuthorization = 'user-status/require-authorization',
+  RequireLogout = 'user-status/require-logout',
 }
 
 export enum APIRoute {

@@ -6,8 +6,8 @@ import {Dispatch} from 'redux';
 import {Actions} from '../../types/action';
 import SortOptionItem from '../sort-option-item/sort-option-item';
 
-const mapStateToProps = ({currentSortOption}:State) => ({
-  currentSortOption,
+const mapStateToProps = ({MAIN}:State) => ({
+  currentSortOption: MAIN.currentSortOption,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Actions>) => ({

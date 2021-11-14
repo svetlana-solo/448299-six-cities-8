@@ -7,17 +7,18 @@ import Map from '../map/map';
 import OffersList from '../offers-list/offers-list';
 import Loading from '../loading/loading';
 import {AuthorizationStatus} from '../../const';
-import {fetchCurrentOfferAction, fetchCommentsAction, fetchNearbyOffersAction} from '../../store/api-actions';
+import {fetchCurrentOfferAction, fetchCommentsAction, fetchNearbyOffersAction, addReviewAction} from '../../store/api-actions';
 import {connect, ConnectedProps} from 'react-redux';
 import {ThunkAppDispatch} from '../../types/action';
 import {State} from '../../types/state';
 import {useEffect} from 'react';
 import {Offer} from '../../types/offer';
+import {CommentMessage} from '../../types/offer';
 
-const mapStateToProps = ({offers, currentOffer, nearbyOffers, reviews, authorizationStatus}:State) => {
-  const currentOfferValue = offers.find(({id}) => currentOffer === id);
-  const nearbyOffersValue: Offer[] = nearbyOffers.reduce<Offer[]>((acc, nearbyOfferId) => {
-    const offer = offers.find(({id}) => nearbyOfferId === id);
+const mapStateToProps = ({DATA, USER, ROOM}:State) => {
+  const currentOfferValue = DATA.offers.find(({id}) => ROOM.currentOffer === id);
+  const nearbyOffersValue: Offer[] = ROOM.nearbyOffers.reduce<Offer[]>((acc, nearbyOfferId) => {
+    const offer = DATA.offers.find(({id}) => nearbyOfferId === id);
     if (offer) {
       acc.push(offer);
     }
@@ -26,16 +27,23 @@ const mapStateToProps = ({offers, currentOffer, nearbyOffers, reviews, authoriza
   return {
     currentOffer: currentOfferValue,
     nearbyOffers: nearbyOffersValue,
-    reviews,
-    authorizationStatus,
+    reviews: ROOM.reviews,
+    authorizationStatus: USER.authorizationStatus,
   };
 };
 
 const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
   setCurrentOfferAction(currentRoomId: number) {
     dispatch(fetchCurrentOfferAction(currentRoomId));
+  },
+  setReviewsAction(currentRoomId: number) {
     dispatch(fetchCommentsAction(currentRoomId));
+  },
+  setNearbyOfferAction(currentRoomId: number) {
     dispatch(fetchNearbyOffersAction(currentRoomId));
+  },
+  onReviewSubmit ({comment, rating}: CommentMessage, currentOfferId: number) {
+    dispatch(addReviewAction({comment, rating}, currentOfferId));
   },
 });
 
@@ -55,21 +63,26 @@ function Good({goodName}: {goodName: string}) {
   return <li className="property__inside-item">{goodName}</li>;
 }
 
-function Room({currentOffer, nearbyOffers, reviews, authorizationStatus, setCurrentOfferAction}: PropsFromRedux): JSX.Element {
+function Room({currentOffer, nearbyOffers, reviews, authorizationStatus, setCurrentOfferAction, setReviewsAction, setNearbyOfferAction, onReviewSubmit}: PropsFromRedux): JSX.Element {
 
   const params: {id: string} = useParams();
   const currentRoomId = Number(params.id);
-  const currentRoom = currentOffer;
+
+  const handleReviewSubmit = ({comment, rating}: CommentMessage) => onReviewSubmit({comment, rating}, currentRoomId);
 
   useEffect(()=>{
     setCurrentOfferAction(currentRoomId);
-  }, [currentRoomId, setCurrentOfferAction]);
+    if(currentOffer){
+      setReviewsAction(currentRoomId);
+      setNearbyOfferAction(currentRoomId);
+    }
+  }, [currentOffer, currentRoomId, setReviewsAction, setCurrentOfferAction, setNearbyOfferAction]);
 
-  if(!currentRoom || currentRoom.id !== currentRoomId){
+  if(!currentOffer || currentOffer.id !== currentRoomId){
     return <Loading />;
   }
 
-  const {rating, title, description, host, isPremium, isFavorite, price, type, bedrooms, maxAdults, goods, images, city} = currentRoom;
+  const {rating, title, description, host, isPremium, isFavorite, price, type, bedrooms, maxAdults, goods, images, city} = currentOffer;
 
 
   return(
@@ -153,7 +166,7 @@ function Room({currentOffer, nearbyOffers, reviews, authorizationStatus, setCurr
               </div>
               <section className="property__reviews reviews">
                 <ReviewsList reviews={reviews}/>
-                {authorizationStatus === AuthorizationStatus.Auth && <ReviewForm />}
+                {authorizationStatus === AuthorizationStatus.Auth && <ReviewForm onSubmit={handleReviewSubmit}/>}
               </section>
             </div>
           </div>

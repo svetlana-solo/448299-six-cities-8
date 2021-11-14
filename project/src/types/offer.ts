@@ -96,3 +96,8 @@ export type ReviewFromServer = {
     name: string
   }
 };
+
+export type CommentMessage = {
+  comment: string,
+  rating: number,
+};

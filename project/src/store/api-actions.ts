@@ -2,7 +2,7 @@ import {ThunkActionResult} from '../types/action';
 import {setOffers, setCurrentOffer, setNearbyOffers, setReviews, requireAuthorization, requireLogout} from './action';
 import {saveToken, dropToken, Token} from '../services/token';
 import {APIRoute, AuthorizationStatus} from '../const';
-import {Offer, OfferFromServer, Review, ReviewFromServer} from '../types/offer';
+import {CommentMessage, Offer, OfferFromServer, Review, ReviewFromServer} from '../types/offer';
 import {AuthData} from '../types/auth-data';
 
 const adaptOfferToClient = (offer: OfferFromServer): Offer =>
@@ -81,6 +81,13 @@ export const fetchNearbyOffersAction = (currentOfferId: number): ThunkActionResu
     await api.get<OfferFromServer[]>(`${APIRoute.Offers}/${currentOfferId}${APIRoute.Nearby}`)
       .then((response) => response.data.map((offer) => adaptOfferToClient(offer)))
       .then((response) => dispatch(setNearbyOffers(response)));
+  };
+
+export const addReviewAction = ({comment, rating}: CommentMessage, currentOfferId: number): ThunkActionResult =>
+  async (dispatch, _getState, api) => {
+    await api.post<ReviewFromServer[]>(`${APIRoute.Comments}/${currentOfferId}`, {comment, rating})
+      .then((response) => response.data.map((review) => adaptReviewToClient(review)))
+      .then((response) => dispatch(setReviews(response)));
   };
 
 export const checkAuthAction = (): ThunkActionResult =>
