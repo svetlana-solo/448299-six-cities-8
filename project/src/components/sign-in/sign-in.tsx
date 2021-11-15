@@ -1,43 +1,32 @@
 import Header from '../header/header';
 import {loginAction} from '../../store/api-actions';
-import {ThunkAppDispatch} from '../../types/action';
-import {AuthData} from '../../types/auth-data';
-import {connect, ConnectedProps} from 'react-redux';
 import {FormEvent, useRef} from 'react';
 import {useHistory} from 'react-router-dom';
 import {AppRoute} from '../../const';
+import {useDispatch} from 'react-redux';
 
-const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
-  onSubmit(authData: AuthData) {
-    dispatch(loginAction(authData));
-  },
-});
-
-const connector = connect(null, mapDispatchToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
-function SignIn({onSubmit}: PropsFromRedux): JSX.Element {
+function SignIn(): JSX.Element {
 
   const loginRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
   const history = useHistory();
+  const dispatch = useDispatch();
 
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
 
     if (loginRef.current !== null && passwordRef.current !== null) {
-      onSubmit({
+      dispatch(loginAction({
         login: loginRef.current.value,
         password: passwordRef.current.value,
-      });
+      }));
       history.push(AppRoute.Main);
     }
   };
 
   return(
     <div className="page page--gray page--login">
-      <Header />
+      <Header isSignIn />
 
       <main className="page__main page__main--login">
         <div className="page__login-container container">
@@ -68,5 +57,4 @@ function SignIn({onSubmit}: PropsFromRedux): JSX.Element {
   );
 }
 
-export {SignIn};
-export default connector(SignIn);
+export default SignIn;

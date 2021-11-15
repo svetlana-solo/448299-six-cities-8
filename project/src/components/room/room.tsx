@@ -8,39 +8,11 @@ import OffersList from '../offers-list/offers-list';
 import Loading from '../loading/loading';
 import {AuthorizationStatus} from '../../const';
 import {fetchCurrentOfferAction, fetchCommentsAction, fetchNearbyOffersAction, addReviewAction} from '../../store/api-actions';
-import {connect, ConnectedProps} from 'react-redux';
-import {ThunkAppDispatch} from '../../types/action';
-import {State} from '../../types/state';
 import {useEffect} from 'react';
 import {CommentMessage} from '../../types/offer';
 import {getReviews, getCurrentOffer, getNearbyOffers} from '../../store/room-page/selectors';
 import {getAuthorizationStatus} from '../../store/user-status/selectors';
-
-const mapStateToProps = (state: State) => ({
-  currentOffer: getCurrentOffer(state),
-  nearbyOffers: getNearbyOffers(state),
-  reviews: getReviews(state),
-  authorizationStatus: getAuthorizationStatus(state),
-});
-
-const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
-  setCurrentOfferAction(currentRoomId: number) {
-    dispatch(fetchCurrentOfferAction(currentRoomId));
-  },
-  setReviewsAction(currentRoomId: number) {
-    dispatch(fetchCommentsAction(currentRoomId));
-  },
-  setNearbyOfferAction(currentRoomId: number) {
-    dispatch(fetchNearbyOffersAction(currentRoomId));
-  },
-  onReviewSubmit ({comment, rating}: CommentMessage, currentOfferId: number) {
-    dispatch(addReviewAction({comment, rating}, currentOfferId));
-  },
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
+import {useDispatch, useSelector} from 'react-redux';
 
 function ApartmentPicture({src}: {src: string}) {
   return (
@@ -54,20 +26,23 @@ function Good({goodName}: {goodName: string}) {
   return <li className="property__inside-item">{goodName}</li>;
 }
 
-function Room({currentOffer, nearbyOffers, reviews, authorizationStatus, setCurrentOfferAction, setReviewsAction, setNearbyOfferAction, onReviewSubmit}: PropsFromRedux): JSX.Element {
+function Room(): JSX.Element {
 
   const params: {id: string} = useParams();
   const currentRoomId = Number(params.id);
+  const currentOffer = useSelector(getCurrentOffer);
+  const nearbyOffers = useSelector(getNearbyOffers);
+  const reviews = useSelector(getReviews);
+  const authorizationStatus = useSelector(getAuthorizationStatus);
+  const dispatch = useDispatch();
 
-  const handleReviewSubmit = ({comment, rating}: CommentMessage) => onReviewSubmit({comment, rating}, currentRoomId);
+  const handleReviewSubmit = ({comment, rating}: CommentMessage) => dispatch(addReviewAction({comment, rating}, currentRoomId));
 
   useEffect(()=>{
-    setCurrentOfferAction(currentRoomId);
-    if(currentOffer){
-      setReviewsAction(currentRoomId);
-      setNearbyOfferAction(currentRoomId);
-    }
-  }, [currentOffer, currentRoomId, setReviewsAction, setCurrentOfferAction, setNearbyOfferAction]);
+    dispatch(fetchCurrentOfferAction(currentRoomId));
+    dispatch(fetchCommentsAction(currentRoomId));
+    dispatch(fetchNearbyOffersAction(currentRoomId));
+  }, [currentRoomId, dispatch]);
 
   if(!currentOffer || currentOffer.id !== currentRoomId){
     return <Loading />;
@@ -174,5 +149,4 @@ function Room({currentOffer, nearbyOffers, reviews, authorizationStatus, setCurr
   );
 }
 
-export {Room};
-export default connector(Room);
+export default Room;

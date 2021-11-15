@@ -1,27 +1,17 @@
-import {connect, ConnectedProps} from 'react-redux';
-import {State} from '../../types/state';
 import {SortOption} from '../../const';
-import {setSortOption} from '../../store/action';
-import {Dispatch} from 'redux';
-import {Actions} from '../../types/action';
+import {setCurrentSortOption} from '../../store/action';
 import SortOptionItem from '../sort-option-item/sort-option-item';
 import {getCurrentSortOption} from '../../store/main-page/selectors';
+import {useDispatch, useSelector} from 'react-redux';
 
-const mapStateToProps = (state : State) => ({
-  currentSortOption: getCurrentSortOption(state),
-});
+function Sort (): JSX.Element {
+  const currentSortOption = useSelector(getCurrentSortOption);
+  const dispatch = useDispatch();
 
-const mapDispatchToProps = (dispatch: Dispatch<Actions>) => ({
-  onSortOptionChange(currentSortOption: string) {
-    dispatch(setSortOption(currentSortOption));
-  },
-});
+  const setSortOption = (sortOption: string) => {
+    dispatch(setCurrentSortOption(sortOption));
+  };
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
-function Sort ({currentSortOption, onSortOptionChange}:PropsFromRedux): JSX.Element {
   const handleSortListClick = () => {
     const sortOptionsElement = document.querySelector('.places__options--custom');
 
@@ -33,7 +23,7 @@ function Sort ({currentSortOption, onSortOptionChange}:PropsFromRedux): JSX.Elem
 
   const handleSortOptionChange = (sortOption: string) => {
     handleSortListClick();
-    onSortOptionChange(sortOption);
+    setSortOption(sortOption);
   };
 
   return (
@@ -56,5 +46,4 @@ function Sort ({currentSortOption, onSortOptionChange}:PropsFromRedux): JSX.Elem
   );
 }
 
-export default connector(Sort);
-export {Sort};
+export default Sort;

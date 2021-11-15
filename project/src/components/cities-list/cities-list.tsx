@@ -1,26 +1,17 @@
-import {Dispatch} from 'redux';
-import {connect, ConnectedProps} from 'react-redux';
-import {Actions} from '../../types/action';
 import {setCity} from '../../store/action';
 import {City} from '../../const';
 import CityItem from '../city-item/city-item';
+import {useDispatch} from 'react-redux';
 
 type CitiesListProps = {
   currentCity: string;
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<Actions>) => ({
-  onCityChange(currentCity: string) {
-    dispatch(setCity(currentCity));
-  },
-});
-
-const connector = connect(null, mapDispatchToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-type ConnectedComponentProps = PropsFromRedux & CitiesListProps;
-
-function CitiesList ({currentCity, onCityChange}:ConnectedComponentProps): JSX.Element {
+function CitiesList ({currentCity}: CitiesListProps): JSX.Element {
+  const dispatch = useDispatch();
+  const onCityChange = (city: string) => {
+    dispatch(setCity(city));
+  };
 
   return (
     <section className="locations container">
@@ -30,5 +21,5 @@ function CitiesList ({currentCity, onCityChange}:ConnectedComponentProps): JSX.E
     </section>);
 }
 
-export default connector(CitiesList);
-export {CitiesList};
+export default CitiesList;
+

@@ -4,7 +4,7 @@ import {RootState} from '../store/root-reducer';
 
 export type State = RootState;
 
-export type Data = {
+export type DataOffers = {
   offers: Offer[],
   isDataLoaded: boolean,
 }
