@@ -12,25 +12,16 @@ import {connect, ConnectedProps} from 'react-redux';
 import {ThunkAppDispatch} from '../../types/action';
 import {State} from '../../types/state';
 import {useEffect} from 'react';
-import {Offer} from '../../types/offer';
 import {CommentMessage} from '../../types/offer';
+import {getReviews, getCurrentOffer, getNearbyOffers} from '../../store/room-page/selectors';
+import {getAuthorizationStatus} from '../../store/user-status/selectors';
 
-const mapStateToProps = ({DATA, USER, ROOM}:State) => {
-  const currentOfferValue = DATA.offers.find(({id}) => ROOM.currentOffer === id);
-  const nearbyOffersValue: Offer[] = ROOM.nearbyOffers.reduce<Offer[]>((acc, nearbyOfferId) => {
-    const offer = DATA.offers.find(({id}) => nearbyOfferId === id);
-    if (offer) {
-      acc.push(offer);
-    }
-    return acc;
-  }, []);
-  return {
-    currentOffer: currentOfferValue,
-    nearbyOffers: nearbyOffersValue,
-    reviews: ROOM.reviews,
-    authorizationStatus: USER.authorizationStatus,
-  };
-};
+const mapStateToProps = (state: State) => ({
+  currentOffer: getCurrentOffer(state),
+  nearbyOffers: getNearbyOffers(state),
+  reviews: getReviews(state),
+  authorizationStatus: getAuthorizationStatus(state),
+});
 
 const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
   setCurrentOfferAction(currentRoomId: number) {
