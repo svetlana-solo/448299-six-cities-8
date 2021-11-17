@@ -1,8 +1,10 @@
+import {City} from '../const';
+
 export type Offer = {
   bedrooms: number,
   city: {
     location: Location,
-    name: string,
+    name: City,
   },
   description: string,
   goods: string[],
@@ -24,7 +26,7 @@ export type OfferFromServer = {
   bedrooms: number,
   city: {
     location: Location,
-    name: string
+    name: City,
   },
   description: string,
   goods: string[],

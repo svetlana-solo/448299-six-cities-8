@@ -1,10 +1,10 @@
-import {ActionType, AuthorizationStatus} from '../const';
+import {ActionType, AuthorizationStatus, City} from '../const';
 import {Offer, Review} from '../types/offer';
 import {createAction} from '@reduxjs/toolkit';
 
 export const setCity = createAction(
   ActionType.SetCity,
-  (currentCity: string) => ({
+  (currentCity: City) => ({
     payload: {
       currentCity,
     },
@@ -16,6 +16,33 @@ export const setOffers = createAction(
   (offers: Offer[]) => ({
     payload: {
       offers,
+    },
+  }),
+);
+
+export const updateOffers = createAction(
+  ActionType.UpdateOffers,
+  (offer: Offer) => ({
+    payload: {
+      offer,
+    },
+  }),
+);
+
+export const setFavoriteOffers = createAction(
+  ActionType.SetFavoriteOffers,
+  (offers: Offer[]) => ({
+    payload: {
+      offers,
+    },
+  }),
+);
+
+export const updateFavoriteOffers = createAction(
+  ActionType.UpdateFavoriteOffers,
+  (offer: Offer) => ({
+    payload: {
+      offer,
     },
   }),
 );

@@ -1,11 +1,12 @@
 import {Offer, Review} from './offer';
-import {AuthorizationStatus} from '../const';
+import {AuthorizationStatus, City} from '../const';
 import {RootState} from '../store/root-reducer';
 
 export type State = RootState;
 
 export type DataOffers = {
   offers: Offer[],
+  favoriteOffers: Offer[],
   isDataLoaded: boolean,
 }
 
@@ -14,7 +15,7 @@ export type User = {
 }
 
 export type Main = {
-  currentCity: string,
+  currentCity: City,
   currentSortOption: string,
 }
 

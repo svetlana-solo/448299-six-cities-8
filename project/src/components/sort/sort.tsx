@@ -8,7 +8,7 @@ function Sort (): JSX.Element {
   const currentSortOption = useSelector(getCurrentSortOption);
   const dispatch = useDispatch();
 
-  const setSortOption = (sortOption: string) => {
+  const handleSortOption = (sortOption: string) => {
     dispatch(setCurrentSortOption(sortOption));
   };
 
@@ -23,7 +23,7 @@ function Sort (): JSX.Element {
 
   const handleSortOptionChange = (sortOption: string) => {
     handleSortListClick();
-    setSortOption(sortOption);
+    handleSortOption(sortOption);
   };
 
   return (

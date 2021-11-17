@@ -4,12 +4,12 @@ import CityItem from '../city-item/city-item';
 import {useDispatch} from 'react-redux';
 
 type CitiesListProps = {
-  currentCity: string;
+  currentCity: City;
 }
 
 function CitiesList ({currentCity}: CitiesListProps): JSX.Element {
   const dispatch = useDispatch();
-  const onCityChange = (city: string) => {
+  const onCityChange = (city: City) => {
     dispatch(setCity(city));
   };
 

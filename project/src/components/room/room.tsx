@@ -136,7 +136,7 @@ function Room(): JSX.Element {
               </section>
             </div>
           </div>
-          <Map city={city.location} offers={nearbyOffers} isRoomMap/>
+          <Map city={city.name} offers={nearbyOffers} isRoomMap/>
         </section>
         <div className="container">
           <section className="near-places places">
