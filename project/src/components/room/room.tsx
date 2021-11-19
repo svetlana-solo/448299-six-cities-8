@@ -7,41 +7,12 @@ import Map from '../map/map';
 import OffersList from '../offers-list/offers-list';
 import Loading from '../loading/loading';
 import {AuthorizationStatus} from '../../const';
-import {fetchCurrentOfferAction, fetchCommentsAction, fetchNearbyOffersAction} from '../../store/api-actions';
-import {connect, ConnectedProps} from 'react-redux';
-import {ThunkAppDispatch} from '../../types/action';
-import {State} from '../../types/state';
+import {fetchCurrentOfferAction, fetchCommentsAction, fetchNearbyOffersAction, addReviewAction} from '../../store/api-actions';
 import {useEffect} from 'react';
-import {Offer} from '../../types/offer';
-
-const mapStateToProps = ({offers, currentOffer, nearbyOffers, reviews, authorizationStatus}:State) => {
-  const currentOfferValue = offers.find(({id}) => currentOffer === id);
-  const nearbyOffersValue: Offer[] = nearbyOffers.reduce<Offer[]>((acc, nearbyOfferId) => {
-    const offer = offers.find(({id}) => nearbyOfferId === id);
-    if (offer) {
-      acc.push(offer);
-    }
-    return acc;
-  }, []);
-  return {
-    currentOffer: currentOfferValue,
-    nearbyOffers: nearbyOffersValue,
-    reviews,
-    authorizationStatus,
-  };
-};
-
-const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
-  setCurrentOfferAction(currentRoomId: number) {
-    dispatch(fetchCurrentOfferAction(currentRoomId));
-    dispatch(fetchCommentsAction(currentRoomId));
-    dispatch(fetchNearbyOffersAction(currentRoomId));
-  },
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
+import {CommentMessage} from '../../types/offer';
+import {getReviews, getCurrentOffer, getNearbyOffers} from '../../store/room-page/selectors';
+import {getAuthorizationStatus} from '../../store/user-status/selectors';
+import {useDispatch, useSelector} from 'react-redux';
 
 function ApartmentPicture({src}: {src: string}) {
   return (
@@ -55,21 +26,29 @@ function Good({goodName}: {goodName: string}) {
   return <li className="property__inside-item">{goodName}</li>;
 }
 
-function Room({currentOffer, nearbyOffers, reviews, authorizationStatus, setCurrentOfferAction}: PropsFromRedux): JSX.Element {
+function Room(): JSX.Element {
 
   const params: {id: string} = useParams();
   const currentRoomId = Number(params.id);
-  const currentRoom = currentOffer;
+  const currentOffer = useSelector(getCurrentOffer);
+  const nearbyOffers = useSelector(getNearbyOffers);
+  const reviews = useSelector(getReviews);
+  const authorizationStatus = useSelector(getAuthorizationStatus);
+  const dispatch = useDispatch();
+
+  const handleReviewSubmit = ({comment, rating}: CommentMessage) => dispatch(addReviewAction({comment, rating}, currentRoomId));
 
   useEffect(()=>{
-    setCurrentOfferAction(currentRoomId);
-  }, [currentRoomId, setCurrentOfferAction]);
+    dispatch(fetchCurrentOfferAction(currentRoomId));
+    dispatch(fetchCommentsAction(currentRoomId));
+    dispatch(fetchNearbyOffersAction(currentRoomId));
+  }, [currentRoomId, dispatch]);
 
-  if(!currentRoom || currentRoom.id !== currentRoomId){
+  if(!currentOffer || currentOffer.id !== currentRoomId){
     return <Loading />;
   }
 
-  const {rating, title, description, host, isPremium, isFavorite, price, type, bedrooms, maxAdults, goods, images, city} = currentRoom;
+  const {rating, title, description, host, isPremium, isFavorite, price, type, bedrooms, maxAdults, goods, images, city} = currentOffer;
 
 
   return(
@@ -153,11 +132,11 @@ function Room({currentOffer, nearbyOffers, reviews, authorizationStatus, setCurr
               </div>
               <section className="property__reviews reviews">
                 <ReviewsList reviews={reviews}/>
-                {authorizationStatus === AuthorizationStatus.Auth && <ReviewForm />}
+                {authorizationStatus === AuthorizationStatus.Auth && <ReviewForm onSubmit={handleReviewSubmit}/>}
               </section>
             </div>
           </div>
-          <Map city={city.location} offers={nearbyOffers} isRoomMap/>
+          <Map city={city.name} offers={nearbyOffers} isRoomMap/>
         </section>
         <div className="container">
           <section className="near-places places">
@@ -170,5 +149,4 @@ function Room({currentOffer, nearbyOffers, reviews, authorizationStatus, setCurr
   );
 }
 
-export {Room};
-export default connector(Room);
+export default Room;

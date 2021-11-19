@@ -8,24 +8,17 @@ import Error from '../error-page/error-page';
 import PrivateRoute from '../private-route/private-route';
 import Loading from '../loading/loading';
 import browserHistory from '../../browser-history';
-import {State} from '../../types/state';
-import {connect, ConnectedProps} from 'react-redux';
-
+import {getAuthorizationStatus} from '../../store/user-status/selectors';
+import {getLoadedDataStatus} from '../../store/data-offers/selectors';
+import {useSelector} from 'react-redux';
 
 const isCheckedAuth = (authorizationStatus: AuthorizationStatus): boolean =>
   authorizationStatus === AuthorizationStatus.Unknown;
 
-const mapStateToProps = ({offers, reviews, authorizationStatus, isDataLoaded}:State) => ({
-  offers,
-  authorizationStatus,
-  isDataLoaded,
-});
+function App(): JSX.Element {
+  const authorizationStatus = useSelector(getAuthorizationStatus);
+  const isDataLoaded = useSelector(getLoadedDataStatus);
 
-const connector = connect(mapStateToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
-function App({offers, authorizationStatus, isDataLoaded}: PropsFromRedux): JSX.Element {
   if(!isDataLoaded || isCheckedAuth(authorizationStatus)){
     return <Loading />;
   }
@@ -34,17 +27,17 @@ function App({offers, authorizationStatus, isDataLoaded}: PropsFromRedux): JSX.E
     <BrowserRouter history={browserHistory}>
       <Switch>
         <Route exact path={AppRoute.Main}>
-          <Main offers={offers} />
+          <Main />
         </Route>
 
         <Route exact path={AppRoute.SignIn}>
-          <SignIn />
+          render={() => <SignIn />}
         </Route>
 
         <PrivateRoute
           exact
           path={AppRoute.Favorites}
-          render={() => <Favorites offers={offers} />}
+          render={() => <Favorites />}
         >
         </PrivateRoute>
 
@@ -52,7 +45,7 @@ function App({offers, authorizationStatus, isDataLoaded}: PropsFromRedux): JSX.E
           <Room/>
         </Route>
 
-        <Route>
+        <Route path={AppRoute.Error}>
           <Error />
         </Route>
 
@@ -61,5 +54,5 @@ function App({offers, authorizationStatus, isDataLoaded}: PropsFromRedux): JSX.E
   );
 }
 
-export default connector(App);
-export {App};
+export default App;
+

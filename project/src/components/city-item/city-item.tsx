@@ -1,16 +1,17 @@
 import {MouseEvent} from 'react';
+import {City} from '../../const';
 
 type CityItemProps = {
-  city: string,
+  city: City,
   currentCity: string,
-  onCityClick: (currentCity: string) => void,
+  onCityClick: (currentCity: City) => void,
 }
 
 function CityItem ({city, currentCity, onCityClick}: CityItemProps): JSX.Element {
   const handleCityClick = (evt: MouseEvent<HTMLAnchorElement>) => {
     evt.preventDefault();
     if(evt.currentTarget.dataset.name && evt.currentTarget.dataset.name !== currentCity){
-      onCityClick(evt.currentTarget.dataset.name);
+      onCityClick(evt.currentTarget.dataset.name as City);
     }
   };
   return (

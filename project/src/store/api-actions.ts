@@ -1,8 +1,8 @@
 import {ThunkActionResult} from '../types/action';
-import {setOffers, setCurrentOffer, setNearbyOffers, setReviews, requireAuthorization, requireLogout} from './action';
+import {setOffers, setCurrentOffer, setNearbyOffers, setFavoriteOffers, setReviews, requireAuthorization, requireLogout, updateFavoriteOffers, updateOffers} from './action';
 import {saveToken, dropToken, Token} from '../services/token';
 import {APIRoute, AuthorizationStatus} from '../const';
-import {Offer, OfferFromServer, Review, ReviewFromServer} from '../types/offer';
+import {CommentMessage, Offer, OfferFromServer, Review, ReviewFromServer} from '../types/offer';
 import {AuthData} from '../types/auth-data';
 
 const adaptOfferToClient = (offer: OfferFromServer): Offer =>
@@ -69,6 +69,13 @@ export const fetchCurrentOfferAction = (currentOfferId: number): ThunkActionResu
       .then((response) => dispatch(setCurrentOffer(response)));
   };
 
+export const fetchFavoriteOffersAction = (): ThunkActionResult =>
+  async (dispatch, _getState, api): Promise<void> => {
+    await api.get<OfferFromServer[]>(APIRoute.Favorite)
+      .then((response) => response.data.map((offer) => adaptOfferToClient(offer)))
+      .then((response) => dispatch(setFavoriteOffers(response)));
+  };
+
 export const fetchCommentsAction = (currentOfferId: number): ThunkActionResult =>
   async (dispatch, _getState, api): Promise<void> => {
     await api.get<ReviewFromServer[]>(`${APIRoute.Comments}/${currentOfferId}`)
@@ -81,6 +88,13 @@ export const fetchNearbyOffersAction = (currentOfferId: number): ThunkActionResu
     await api.get<OfferFromServer[]>(`${APIRoute.Offers}/${currentOfferId}${APIRoute.Nearby}`)
       .then((response) => response.data.map((offer) => adaptOfferToClient(offer)))
       .then((response) => dispatch(setNearbyOffers(response)));
+  };
+
+export const addReviewAction = ({comment, rating}: CommentMessage, currentOfferId: number): ThunkActionResult =>
+  async (dispatch, _getState, api) => {
+    await api.post<ReviewFromServer[]>(`${APIRoute.Comments}/${currentOfferId}`, {comment, rating})
+      .then((response) => response.data.map((review) => adaptReviewToClient(review)))
+      .then((response) => dispatch(setReviews(response)));
   };
 
 export const checkAuthAction = (): ThunkActionResult =>
@@ -98,6 +112,15 @@ export const loginAction = ({login: email, password}: AuthData): ThunkActionResu
     dispatch(requireAuthorization(AuthorizationStatus.Auth));
   };
 
+export const changeFavoriteStatus = (currentOfferId: number, favoriteStatus: number): ThunkActionResult =>
+  async (dispatch, _getState, api) => {
+    await api.post<OfferFromServer>(`${APIRoute.Favorite}/${currentOfferId}/${favoriteStatus}`)
+      .then((response) => adaptOfferToClient(response.data))
+      .then((response) => {
+        dispatch(updateOffers(response));
+        dispatch(updateFavoriteOffers(response));
+      });
+  };
 
 export const logoutAction = (): ThunkActionResult =>
   async (dispatch, _getState, api) => {

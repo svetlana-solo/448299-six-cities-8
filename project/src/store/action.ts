@@ -1,56 +1,95 @@
-import {ActionType, AuthorizationStatus} from '../const';
+import {ActionType, AuthorizationStatus, City} from '../const';
 import {Offer, Review} from '../types/offer';
+import {createAction} from '@reduxjs/toolkit';
 
-export const setCity = (currentCity:string) => ({
-  type: ActionType.SetCity,
-  payload: {
-    currentCity,
-  },
-} as const);
+export const setCity = createAction(
+  ActionType.SetCity,
+  (currentCity: City) => ({
+    payload: {
+      currentCity,
+    },
+  }),
+);
 
-export const setOffers = (offers: Offer[]) => ({
-  type: ActionType.SetOffers,
-  payload: {
-    offers,
-  },
-} as const);
+export const setOffers = createAction(
+  ActionType.SetOffers,
+  (offers: Offer[]) => ({
+    payload: {
+      offers,
+    },
+  }),
+);
 
-export const setReviews = (reviews: Review[]) => ({
-  type: ActionType.SetReviews,
-  payload: {
-    reviews,
-  },
-} as const);
+export const updateOffers = createAction(
+  ActionType.UpdateOffers,
+  (offer: Offer) => ({
+    payload: {
+      offer,
+    },
+  }),
+);
 
+export const setFavoriteOffers = createAction(
+  ActionType.SetFavoriteOffers,
+  (offers: Offer[]) => ({
+    payload: {
+      offers,
+    },
+  }),
+);
 
-export const setCurrentOffer = (offer: Offer) => ({
-  type: ActionType.SetCurrentOffer,
-  payload: {
-    offer,
-  },
-} as const);
+export const updateFavoriteOffers = createAction(
+  ActionType.UpdateFavoriteOffers,
+  (offer: Offer) => ({
+    payload: {
+      offer,
+    },
+  }),
+);
 
-export const setNearbyOffers = (offers: Offer[]) => ({
-  type: ActionType.SetNearbyOffers,
-  payload: {
-    offers,
-  },
-} as const);
+export const setReviews = createAction(
+  ActionType.SetReviews,
+  (reviews: Review[]) => ({
+    payload: {
+      reviews,
+    },
+  }),
+);
 
-export const setSortOption = (currentSortOption: string) => ({
-  type: ActionType.SetSortOption,
-  payload: {
-    currentSortOption,
-  },
-} as const);
+export const setCurrentOffer = createAction(
+  ActionType.SetCurrentOffer,
+  (offer: Offer) => ({
+    payload: {
+      offer,
+    },
+  }),
+);
 
-export const requireAuthorization = (authStatus: AuthorizationStatus) => ({
-  type: ActionType.RequireAuthorization,
-  payload: authStatus,
-} as const);
+export const setNearbyOffers = createAction(
+  ActionType.SetNearbyOffers,
+  (offers: Offer[]) => ({
+    payload: {
+      offers,
+    },
+  }),
+);
 
-export const requireLogout = () => ({
-  type: ActionType.RequireLogout,
-} as const);
+export const setCurrentSortOption = createAction(
+  ActionType.SetSortOption,
+  (currentSortOption: string) => ({
+    payload: {
+      currentSortOption,
+    },
+  }),
+);
+
+export const requireAuthorization = createAction(
+  ActionType.RequireAuthorization,
+  (authStatus: AuthorizationStatus) => ({
+    payload: authStatus,
+  }),
+);
+
+export const requireLogout = createAction(ActionType.RequireLogout);
 
 
