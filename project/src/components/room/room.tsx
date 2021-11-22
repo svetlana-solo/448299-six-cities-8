@@ -1,13 +1,13 @@
-import {useParams} from 'react-router-dom';
-import {getRating} from '../../utils';
+import {useParams, useHistory} from 'react-router-dom';
+import {getRating} from '../../utils/utils';
 import Header from '../header/header';
 import ReviewsList from '../reviews-list/reviews-list';
 import ReviewForm from '../review-form/review-form';
 import Map from '../map/map';
 import OffersList from '../offers-list/offers-list';
 import Loading from '../loading/loading';
-import {AuthorizationStatus} from '../../const';
-import {fetchCurrentOfferAction, fetchCommentsAction, fetchNearbyOffersAction, addReviewAction} from '../../store/api-actions';
+import {AuthorizationStatus, AppRoute} from '../../const';
+import {fetchCurrentOfferAction, fetchCommentsAction, fetchNearbyOffersAction, addReviewAction, changeFavoriteStatus} from '../../store/api-actions';
 import {useEffect} from 'react';
 import {CommentMessage} from '../../types/offer';
 import {getReviews, getCurrentOffer, getNearbyOffers} from '../../store/room-page/selectors';
@@ -35,6 +35,7 @@ function Room(): JSX.Element {
   const reviews = useSelector(getReviews);
   const authorizationStatus = useSelector(getAuthorizationStatus);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const handleReviewSubmit = ({comment, rating}: CommentMessage) => dispatch(addReviewAction({comment, rating}, currentRoomId));
 
@@ -48,8 +49,16 @@ function Room(): JSX.Element {
     return <Loading />;
   }
 
-  const {rating, title, description, host, isPremium, isFavorite, price, type, bedrooms, maxAdults, goods, images, city} = currentOffer;
+  const {rating, title, description, host, isPremium, isFavorite, price, type, bedrooms, maxAdults, goods, images, city, id} = currentOffer;
 
+  const handleFavoriteClick = () => {
+    if (authorizationStatus !== AuthorizationStatus.Auth){
+      history.push(AppRoute.SignIn);
+      return;
+    }
+    document.querySelector('.property__bookmark-button')?.classList.toggle('property__bookmark-button--active');
+    dispatch(changeFavoriteStatus(id, Number(!isFavorite)));
+  };
 
   return(
     <div className="page">
@@ -75,7 +84,7 @@ function Room(): JSX.Element {
                 <h1 className="property__name">
                   {title}
                 </h1>
-                <button className={isFavorite ? 'property__bookmark-button place-card__bookmark-button--active button' : 'property__bookmark-button button'} type="button">
+                <button className={`property__bookmark-button ${isFavorite ? 'property__bookmark-button--active' : ''} button`} type="button" onClick={handleFavoriteClick}>
                   <svg className="place-card__bookmark-icon" width="31" height="33">
                     <use xlinkHref="#icon-bookmark"></use>
                   </svg>
@@ -113,7 +122,7 @@ function Room(): JSX.Element {
               <div className="property__host">
                 <h2 className="property__host-title">Meet the host</h2>
                 <div className="property__host-user user">
-                  <div className={host.isPro ? 'property__avatar-wrapper property__avatar-wrapper--pro user__avatar-wrapper' : 'property__avatar-wrapper user__avatar-wrapper'}>
+                  <div className={`property__avatar-wrapper ${host.isPro ? 'property__avatar-wrapper--pro' : ''} user__avatar-wrapper`}>
                     <img className="property__avatar user__avatar" src={host.avatarUrl} width="74" height="74" alt="Host avatar" />
                   </div>
                   <span className="property__user-name">
@@ -136,7 +145,7 @@ function Room(): JSX.Element {
               </section>
             </div>
           </div>
-          <Map city={city.name} offers={nearbyOffers} isRoomMap/>
+          <Map city={city.name} offers={nearbyOffers} offerFromRoom={currentOffer.id}/>
         </section>
         <div className="container">
           <section className="near-places places">

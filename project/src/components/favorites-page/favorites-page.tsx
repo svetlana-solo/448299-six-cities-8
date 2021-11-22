@@ -1,11 +1,12 @@
 import FavoriteList from '../favorite-list/favorite-list';
 import EmptyFavoritePage from '../empty-favorite-page/empty-favorite-page';
 import Header from '../header/header';
+import {Link} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 import {fetchFavoriteOffersAction} from '../../store/api-actions';
 import {getFavoriteOffers, getFavoriteLocation} from '../../store/data-offers/selectors';
 import {useEffect} from 'react';
-import {City} from '../../const';
+import {City, AppRoute} from '../../const';
 import {Offer} from '../../types/offer';
 
 const getOffersInCurrentCity = (offers: Offer[], city: City) => offers.slice().filter((offer) => offer.city.name === city);
@@ -37,9 +38,9 @@ function FavoritesPage(): JSX.Element {
           </div>
         </main>}
       <footer className="footer container">
-        <a className="footer__logo-link" href="main.html">
+        <Link className="footer__logo-link" to={AppRoute.Main}>
           <img className="footer__logo" src="img/logo.svg" alt="6 cities logo" width="64" height="33" />
-        </a>
+        </Link>
       </footer>
     </div>
   );

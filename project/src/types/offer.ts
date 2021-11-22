@@ -34,7 +34,7 @@ export type OfferFromServer = {
     'avatar_url': string,
     id: number,
     'is_pro': boolean,
-    name: string
+    name: string,
   },
   id: number,
   images: string[],
@@ -46,7 +46,7 @@ export type OfferFromServer = {
   price: number,
   rating: number,
   title: string,
-  type: string
+  type: string,
 }
 
 export type Offers = Offer[];
@@ -61,7 +61,7 @@ export type HostInfo = {
 export type Location = {
   latitude: number,
   longitude: number,
-  zoom: number
+  zoom: number,
 }
 
 export enum OfferType {
@@ -73,29 +73,29 @@ export enum OfferType {
 
 export type Review = {
   comment: string,
-  date: Date,
+  date: string,
   id: number,
   rating: number,
   user: {
     avatarUrl: string,
     id: number,
     isPro: boolean,
-    name: string
+    name: string,
   }
 };
 
 export type Reviews = Review[];
 
 export type ReviewFromServer = {
-  comment: string,
-  date: Date,
-  id: number,
-  rating: number,
-  user: {
+  'comment': string,
+  'date': string,
+  'id': number,
+  'rating': number,
+  'user': {
     'avatar_url': string,
-    id: number,
+    'id': number,
     'is_pro': boolean,
-    name: string
+    'name': string,
   }
 };
 

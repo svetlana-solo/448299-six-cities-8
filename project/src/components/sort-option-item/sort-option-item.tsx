@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react';
+import {MouseEvent} from 'react';
 
 type SortOptionItemProps = {
   sortOptionName: string,
@@ -6,7 +6,7 @@ type SortOptionItemProps = {
   onSortOptionClick: (sortOption: string) => void,
 }
 
-function SortOptionItem ({sortOptionName , currentSortOption, onSortOptionClick}: SortOptionItemProps): JSX.Element {
+function SortOptionItem ({sortOptionName, currentSortOption, onSortOptionClick}: SortOptionItemProps): JSX.Element {
   const handleSortOptionChange = (evt : MouseEvent<HTMLLIElement>) => {
     if(evt.currentTarget.dataset.name && evt.currentTarget.dataset.name !== currentSortOption){
       onSortOptionClick(evt.currentTarget.dataset.name);
@@ -15,7 +15,7 @@ function SortOptionItem ({sortOptionName , currentSortOption, onSortOptionClick}
 
   return (
     <li
-      className={`places__option ${sortOptionName === currentSortOption? 'places__option--active':''}`}
+      className={`places__option ${sortOptionName === currentSortOption? 'places__option--active' : ''}`}
       tabIndex={0}
       data-name={sortOptionName}
       onClick={handleSortOptionChange}

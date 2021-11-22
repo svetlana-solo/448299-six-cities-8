@@ -1,5 +1,5 @@
 import {Offer} from '../../types/offer';
-import {getRating} from '../../utils';
+import {getRating} from '../../utils/utils';
 import {changeFavoriteStatus} from '../../store/api-actions';
 import {useDispatch} from 'react-redux';
 
@@ -29,7 +29,7 @@ function FavoriteCard({offer}: FavoriteCardProps): JSX.Element {
             <b className="place-card__price-value">&euro;{price}</b>
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
-          <button className="place-card__bookmark-button {isFavorite ? 'place-card__bookmark-button--active' : ''} button" type="button" onClick={handleFavoriteClick}>
+          <button className={`place-card__bookmark-button ${isFavorite ? 'place-card__bookmark-button--active' : ''} button`} type="button" onClick={handleFavoriteClick}>
             <svg className="place-card__bookmark-icon" width="18" height="19">
               <use xlinkHref="#icon-bookmark"></use>
             </svg>

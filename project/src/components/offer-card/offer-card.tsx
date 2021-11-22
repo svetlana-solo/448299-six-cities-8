@@ -1,11 +1,11 @@
-import {Offer} from '../../types/offer';
-import {Link, useHistory} from 'react-router-dom';
-import {AppRoute} from '../../const';
-import {getRating} from '../../utils';
-import {changeFavoriteStatus} from '../../store/api-actions';
-import {useDispatch, useSelector} from 'react-redux';
-import {getAuthorizationStatus} from '../../store/user-status/selectors';
-import {AuthorizationStatus} from '../../const';
+import { Offer } from '../../types/offer';
+import { Link, useHistory } from 'react-router-dom';
+import { AppRoute } from '../../const';
+import { getRating } from '../../utils/utils';
+import { changeFavoriteStatus } from '../../store/api-actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAuthorizationStatus } from '../../store/user-status/selectors';
+import { AuthorizationStatus } from '../../const';
 
 type OfferCardProps = {
   offer: Offer,
@@ -14,13 +14,13 @@ type OfferCardProps = {
 
 function OfferCard(props: OfferCardProps): JSX.Element {
   const offer = props.offer;
-  const {id, previewImage, title, isPremium, isFavorite, type, price, rating} = offer;
+  const { id, previewImage, title, isPremium, isFavorite, type, price, rating } = offer;
   const dispatch = useDispatch();
   const history = useHistory();
   const authStatus = useSelector(getAuthorizationStatus);
 
   const handleFavoriteClick = () => {
-    if (authStatus !== AuthorizationStatus.Auth){
+    if (authStatus !== AuthorizationStatus.Auth) {
       history.push(AppRoute.SignIn);
       return;
     }
@@ -28,13 +28,13 @@ function OfferCard(props: OfferCardProps): JSX.Element {
   };
 
   const handleMouseEnter = () => {
-    if(props.onCardFocus) {
+    if (props.onCardFocus) {
       props.onCardFocus(id);
     }
   };
 
   const handleMouseLeave = () => {
-    if(props.onCardFocus){
+    if (props.onCardFocus) {
       props.onCardFocus(null);
     }
   };
@@ -46,12 +46,12 @@ function OfferCard(props: OfferCardProps): JSX.Element {
     >
       {
         isPremium &&
-          <div className="place-card__mark">
-            <span>Premium</span>
-          </div>
+        <div className="place-card__mark">
+          <span>Premium</span>
+        </div>
       }
       <div className="cities__image-wrapper place-card__image-wrapper">
-        <Link to={`${AppRoute.Room}/${id}`}>
+        <Link to={AppRoute.Room.replace(':id', `${id}`)}>
           <img className="place-card__image" src={previewImage} width="260" height="200" alt="Place" />
         </Link>
       </div>
@@ -70,12 +70,12 @@ function OfferCard(props: OfferCardProps): JSX.Element {
         </div>
         <div className="place-card__rating rating">
           <div className="place-card__stars rating__stars">
-            <span style={{width: getRating(rating)}}></span>
+            <span style={{ width: getRating(rating) }}></span>
             <span className="visually-hidden">Rating</span>
           </div>
         </div>
         <h2 className="place-card__name">
-          <Link to={`${AppRoute.Room}/${id}`}>{title}</Link>
+          <Link to={AppRoute.Room.replace(':id', `${id}`)}>{title}</Link>
         </h2>
         <p className="place-card__type">{type}</p>
       </div>
