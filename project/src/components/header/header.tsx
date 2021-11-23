@@ -1,10 +1,9 @@
 import {Link} from 'react-router-dom';
 import {useSelector, useDispatch} from 'react-redux';
 import {AppRoute} from '../../const';
-import Logo from '../logo/logo';
-import {getAuthorizationStatus} from '../../store/user-status/selectors';
+import {getAuthorizationStatus, getUserEmail} from '../../store/user-status/selectors';
 import {AuthorizationStatus} from '../../const';
-import {requireLogout} from '../../store/action';
+import {logoutAction} from '../../store/api-actions';
 
 type HeaderProps = {
   isSignIn? : boolean,
@@ -12,15 +11,18 @@ type HeaderProps = {
 
 function Header({isSignIn} : HeaderProps): JSX.Element {
   const authorizationStatus = useSelector(getAuthorizationStatus);
+  const userEmail = useSelector(getUserEmail);
   const dispatch = useDispatch();
-  const handleClickSignOut = () => dispatch(requireLogout());
+  const handleClickSignOut = () => dispatch(logoutAction());
 
   return (
     <header className='header'>
       <div className='container'>
         <div className='header__wrapper'>
           <div className='header__left'>
-            <Logo />
+            <Link className="header__logo-link" to={AppRoute.Main}>
+              <img className="header__logo" src="img/logo.svg" alt="6 cities logo" width="81" height="41" />
+            </Link>
           </div>
           {!isSignIn &&
             <nav className="header__nav">
@@ -30,7 +32,7 @@ function Header({isSignIn} : HeaderProps): JSX.Element {
                     <div className="header__avatar-wrapper user__avatar-wrapper">
                     </div>
                     {authorizationStatus === AuthorizationStatus.Auth
-                      ? <span className="header__user-name user__name">Oliver.conner@gmail.com</span>
+                      ? <span className="header__user-name user__name">{userEmail}</span>
                       : <span className="header__login">Sign in</span>}
                   </Link>
                 </li>

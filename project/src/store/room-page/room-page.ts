@@ -1,9 +1,9 @@
 import {Room} from '../../types/state';
-import { createReducer } from '@reduxjs/toolkit';
+import {createReducer} from '@reduxjs/toolkit';
 import {setCurrentOffer, setNearbyOffers, setReviews} from '../action';
 
-const initialState : Room = {
-  currentOffer : null,
+const initialState: Room = {
+  currentOffer: null,
   nearbyOffers: [],
   reviews: [],
 };

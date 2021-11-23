@@ -12,6 +12,7 @@ export type DataOffers = {
 
 export type User = {
   authorizationStatus: AuthorizationStatus,
+  userEmail: string,
 }
 
 export type Main = {

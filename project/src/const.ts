@@ -24,6 +24,7 @@ export enum ActionType {
   SetNearbyOffers = 'room-page/set-nearby-offers',
   RequireAuthorization = 'user-status/require-authorization',
   RequireLogout = 'user-status/require-logout',
+  SetUserEmail = 'user-status/set-user-email',
 }
 
 export enum APIRoute {
@@ -63,3 +64,11 @@ export const CityLocation = {
 export const URL_MARKER_DEFAULT = 'https://assets.htmlacademy.ru/content/intensive/javascript-1/demo/interactive-map/pin.svg';
 
 export const URL_MARKER_CURRENT = 'https://assets.htmlacademy.ru/content/intensive/javascript-1/demo/interactive-map/main-pin.svg';
+
+export const RatingToValues = {
+  Perfect : 5,
+  Good : 4,
+  NotBad : 3,
+  Badly : 2,
+  Terribly : 1,
+};

@@ -10,6 +10,8 @@ import browserHistory from './browser-history';
 import {fetchOffersAction, checkAuthAction} from './store/api-actions';
 import {Router as  BrowserRouter} from 'react-router-dom';
 import {configureStore} from '@reduxjs/toolkit';
+import {ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const api = createAPI(
   () => store.dispatch(requireAuthorization(AuthorizationStatus.NoAuth)),
@@ -33,6 +35,7 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter history={browserHistory}>
+        <ToastContainer />
         <App />
       </BrowserRouter>
     </Provider>

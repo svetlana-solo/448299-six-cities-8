@@ -1,9 +1,14 @@
 import {ThunkActionResult} from '../types/action';
-import {setOffers, setCurrentOffer, setNearbyOffers, setFavoriteOffers, setReviews, requireAuthorization, requireLogout, updateFavoriteOffers, updateOffers} from './action';
+import {setOffers, setCurrentOffer, setNearbyOffers, setFavoriteOffers, setReviews, requireAuthorization, requireLogout, updateFavoriteOffers, updateOffers, setUserEmail} from './action';
 import {saveToken, dropToken, Token} from '../services/token';
 import {APIRoute, AuthorizationStatus} from '../const';
 import {CommentMessage, Offer, OfferFromServer, Review, ReviewFromServer} from '../types/offer';
 import {AuthData} from '../types/auth-data';
+import {toast} from 'react-toastify';
+import {enableReviewForm} from '../utils/utils';
+
+const AUTH_FAIL_MESSAGE = 'Необходимо авторизоваться';
+const ADD_NEW_COMMENT_FAIL_MESSAGE = 'Ошибка отправки комментария';
 
 const adaptOfferToClient = (offer: OfferFromServer): Offer =>
   ({
@@ -65,8 +70,11 @@ export const fetchOffersAction = (): ThunkActionResult =>
 export const fetchCurrentOfferAction = (currentOfferId: number): ThunkActionResult =>
   async (dispatch, _getState, api): Promise<void> => {
     await api.get<OfferFromServer>(`${APIRoute.Offers}/${currentOfferId}`)
-      .then((response) => adaptOfferToClient(response.data))
-      .then((response) => dispatch(setCurrentOffer(response)));
+      .then((response) => {
+        if(response?.data){
+          dispatch(setCurrentOffer(adaptOfferToClient(response.data)));
+        }
+      });
   };
 
 export const fetchFavoriteOffersAction = (): ThunkActionResult =>
@@ -92,24 +100,14 @@ export const fetchNearbyOffersAction = (currentOfferId: number): ThunkActionResu
 
 export const addReviewAction = ({comment, rating}: CommentMessage, currentOfferId: number): ThunkActionResult =>
   async (dispatch, _getState, api) => {
-    await api.post<ReviewFromServer[]>(`${APIRoute.Comments}/${currentOfferId}`, {comment, rating})
-      .then((response) => response.data.map((review) => adaptReviewToClient(review)))
-      .then((response) => dispatch(setReviews(response)));
-  };
-
-export const checkAuthAction = (): ThunkActionResult =>
-  async (dispatch, _getState, api) => {
-    await api.get(APIRoute.Login)
-      .then(() => {
-        dispatch(requireAuthorization(AuthorizationStatus.Auth));
-      });
-  };
-
-export const loginAction = ({login: email, password}: AuthData): ThunkActionResult =>
-  async (dispatch, _getState, api) => {
-    const {data: {token}} = await api.post<{token: Token}>(APIRoute.Login, {email, password});
-    saveToken(token);
-    dispatch(requireAuthorization(AuthorizationStatus.Auth));
+    try{
+      await api.post<ReviewFromServer[]>(`${APIRoute.Comments}/${currentOfferId}`, {comment, rating})
+        .then((response) => response.data.map((review) => adaptReviewToClient(review)))
+        .then((response) => dispatch(setReviews(response)));
+    } catch {
+      toast.warn(ADD_NEW_COMMENT_FAIL_MESSAGE);
+    }
+    enableReviewForm();
   };
 
 export const changeFavoriteStatus = (currentOfferId: number, favoriteStatus: number): ThunkActionResult =>
@@ -120,6 +118,28 @@ export const changeFavoriteStatus = (currentOfferId: number, favoriteStatus: num
         dispatch(updateOffers(response));
         dispatch(updateFavoriteOffers(response));
       });
+  };
+
+export const checkAuthAction = (): ThunkActionResult =>
+  async (dispatch, _getState, api) => {
+    try {
+      await api.get(APIRoute.Login)
+        .then((response) => {
+          if(response.data){
+            dispatch(requireAuthorization(AuthorizationStatus.Auth));
+          }
+        });
+    } catch {
+      toast.info(AUTH_FAIL_MESSAGE);
+    }
+  };
+
+export const loginAction = ({login: email, password}: AuthData): ThunkActionResult =>
+  async (dispatch, _getState, api) => {
+    const {data: {token}} = await api.post<{token: Token}>(APIRoute.Login, {email, password});
+    saveToken(token);
+    dispatch(setUserEmail(email));
+    dispatch(requireAuthorization(AuthorizationStatus.Auth));
   };
 
 export const logoutAction = (): ThunkActionResult =>

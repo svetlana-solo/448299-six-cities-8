@@ -2,6 +2,7 @@ import {ActionType, AuthorizationStatus, City} from '../const';
 import {Offer, Review} from '../types/offer';
 import {createAction} from '@reduxjs/toolkit';
 
+
 export const setCity = createAction(
   ActionType.SetCity,
   (currentCity: City) => ({
@@ -52,6 +53,15 @@ export const setReviews = createAction(
   (reviews: Review[]) => ({
     payload: {
       reviews,
+    },
+  }),
+);
+
+export const setUserEmail = createAction(
+  ActionType.SetUserEmail,
+  (userEmail: string) => ({
+    payload: {
+      userEmail,
     },
   }),
 );
