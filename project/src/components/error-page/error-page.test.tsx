@@ -1,9 +1,9 @@
-import {render, screen} from '@testing-library/react';
-import {Router} from 'react-router-dom';
-import {createMemoryHistory} from 'history';
+import { render, screen } from '@testing-library/react';
+import { Router } from 'react-router-dom';
+import { createMemoryHistory } from 'history';
 import Error from './error-page';
 
-describe('Component: NotFoundScreen', () => {
+describe('Component: Error', () => {
   it('should render correctly', () => {
     const history = createMemoryHistory();
     render(
@@ -11,7 +11,7 @@ describe('Component: NotFoundScreen', () => {
         <Error />
       </Router>,
     );
-    expect(screen.getByText('404 Not found')).toBeInTheDocument();
+    expect(screen.getByText('404 Not Found')).toBeInTheDocument();
     expect(screen.getByText('Вернуться на главную страницу')).toBeInTheDocument();
 
   });

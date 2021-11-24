@@ -1,27 +1,27 @@
-import {render, screen} from '@testing-library/react';
-import {Router} from 'react-router-dom';
-import {createMemoryHistory} from 'history';
-import {Provider} from 'react-redux';
-import {configureMockStore} from '@jedmao/redux-mock-store';
-import {AuthorizationStatus, AppRoute, City, SortOption} from '../../const';
+import { render, screen } from '@testing-library/react';
+import { Router } from 'react-router-dom';
+import { createMemoryHistory } from 'history';
+import { Provider } from 'react-redux';
+import { configureMockStore } from '@jedmao/redux-mock-store';
+import { AuthorizationStatus, AppRoute, City, SortOption } from '../../const';
 import App from './app';
 import { offers, reviews, offerWithFavoriteStatus } from '../../utils/mocks';
-import {createAPI} from '../../services/api';
-import thunk, {ThunkDispatch} from 'redux-thunk';
-import {State} from '../../types/state';
-import {Action} from 'redux';
+import { createAPI } from '../../services/api';
+import thunk, { ThunkDispatch } from 'redux-thunk';
+import { State } from '../../types/state';
+import { Action } from 'redux';
 
 const onFakeUnauthorized = jest.fn();
 const onFakeNotFound = jest.fn();
-const api = createAPI(onFakeUnauthorized(),onFakeNotFound());
+const api = createAPI(onFakeUnauthorized(), onFakeNotFound());
 const middlewares = [thunk.withExtraArgument(api)];
 const mockStore = configureMockStore<
-    State,
-    Action,
-    ThunkDispatch<State, typeof api, Action>
-  >(middlewares);
+  State,
+  Action,
+  ThunkDispatch<State, typeof api, Action>
+>(middlewares);
 
-const store  = mockStore({
+const store = mockStore({
   DATA: {
     offers: offers,
     favoriteOffers: offers,
@@ -36,7 +36,7 @@ const store  = mockStore({
   },
   ROOM: {
     currentOffer: offerWithFavoriteStatus.id,
-    nearbyOffers: offers.map(({id}) => id),
+    nearbyOffers: offers.map(({ id }) => id),
     reviews,
   },
 });
@@ -65,7 +65,7 @@ describe('Application Routing', () => {
   });
 
   it('should render "AuthScreen" when user navigate to "/login"', () => {
-    const storeForAuthScreen  = mockStore({
+    const storeForAuthScreen = mockStore({
       USER: {
         authorizationStatus: AuthorizationStatus.NoAuth,
       },
@@ -88,7 +88,7 @@ describe('Application Routing', () => {
 
   it('should render "FavoritesPage" when user navigate to "/favorites"', () => {
     history.push(AppRoute.Favorites);
-    const {container} = render(fakeApp);
+    const { container } = render(fakeApp);
 
     expect(screen.getByText(/Saved listing/i)).toBeInTheDocument();
     expect(container.querySelector('.favorites__list')).toBeInTheDocument();
@@ -96,7 +96,7 @@ describe('Application Routing', () => {
 
   it('should render "RoomPage" when user navigate to "/offer/:id"', () => {
     history.push(AppRoute.Room);
-    const {container} = render(fakeApp);
+    const { container } = render(fakeApp);
 
     expect(screen.getByText(/Other places in the neighbourhood/i)).toBeInTheDocument();
     expect(screen.getByText(/Meet the host/i)).toBeInTheDocument();
@@ -109,7 +109,7 @@ describe('Application Routing', () => {
     history.push('/non-existent-route');
     render(fakeApp);
 
-    expect(screen.getByText('404. Page not found')).toBeInTheDocument();
-    expect(screen.getByText('Вернуться на главную')).toBeInTheDocument();
+    expect(screen.getByText('404 Not Found')).toBeInTheDocument();
+    expect(screen.getByText('Вернуться на главную страницу')).toBeInTheDocument();
   });
 });

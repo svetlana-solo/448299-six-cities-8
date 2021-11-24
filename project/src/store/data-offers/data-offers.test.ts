@@ -1,10 +1,10 @@
-import {dataOffers} from './data-offers';
-import {setFavoriteOffers, setOffers, updateFavoriteOffers, updateOffers} from '../action';
-import {offers, offersWithFavoriteStatus, offerWithFavoriteStatus, offerWithoutFavoriteStatus} from '../../utils/mocks';
+import { dataOffers } from './data-offers';
+import { setFavoriteOffers, setOffers, updateFavoriteOffers, updateOffers } from '../action';
+import { offers, offersWithFavoriteStatus, offerWithFavoriteStatus, offerWithoutFavoriteStatus } from '../../utils/mocks';
 
 describe('Reducer: dataOffers', () => {
   it('without additional parameters should return initial state', () => {
-    expect(dataOffers(void 0, {type: 'UNKNOWN_ACTION'}))
+    expect(dataOffers(void 0, { type: 'UNKNOWN_ACTION' }))
       .toEqual({
         offers: [],
         favoriteOffers: [],

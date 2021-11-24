@@ -1,13 +1,13 @@
-import {Offer, Review} from '../types/offer';
-import {City} from '../const';
+import { Offer, Review } from '../types/offer';
+import { City } from '../const';
 
 export const offers: Offer[] = [
   {
     bedrooms: 3,
     city: {
       location: {
-        latitude: 52.370216,
-        longitude: 4.895168,
+        latitude: 52.3909553943508,
+        longitude: 4.85309666406198,
         zoom: 10,
       },
       name: City.Amsterdam,
@@ -35,12 +35,12 @@ export const offers: Offer[] = [
     rating: 4.8,
     title: 'The First of example offer',
     type: 'apartment',
-  },{
+  }, {
     bedrooms: 3,
     city: {
       location: {
-        latitude: 52.370216,
-        longitude: 4.895168,
+        latitude: 52.3909553943508,
+        longitude: 4.85309666406198,
         zoom: 10,
       },
       name: City.Amsterdam,
@@ -58,7 +58,7 @@ export const offers: Offer[] = [
     isFavorite: true,
     isPremium: false,
     location: {
-      latitude: 52.369553943508,
+      latitude: 52.3909553943508,
       longitude: 4.85309666406198,
       zoom: 8,
     },
@@ -71,19 +71,19 @@ export const offers: Offer[] = [
   },
 ];
 
-export const offersWithFavoriteStatus : Offer[] = [
+export const offersWithFavoriteStatus: Offer[] = [
   {
     bedrooms: 3,
     city: {
       location: {
-        latitude: 52.370216,
-        longitude: 4.895168,
+        latitude: 52.3909553943508,
+        longitude: 4.85309666406198,
         zoom: 10,
       },
       name: City.Amsterdam,
     },
     description: 'A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam.',
-    goods: ['Heating', 'Washing machine'],
+    goods: ['Heating', 'Kitchen', 'Cable TV', 'Washing machine', 'Coffee machine'],
     host: {
       avatarUrl: 'img/1.png',
       id: 3,
@@ -105,12 +105,12 @@ export const offersWithFavoriteStatus : Offer[] = [
     rating: 4.8,
     title: 'The First of example offer',
     type: 'apartment',
-  },{
+  }, {
     bedrooms: 3,
     city: {
       location: {
-        latitude: 52.370216,
-        longitude: 4.895168,
+        latitude: 52.3909553943508,
+        longitude: 4.85309666406198,
         zoom: 10,
       },
       name: City.Amsterdam,
@@ -128,8 +128,8 @@ export const offersWithFavoriteStatus : Offer[] = [
     isFavorite: true,
     isPremium: false,
     location: {
-      latitude: 52.35514938496378,
-      longitude: 4.673877537499948,
+      latitude: 52.3909553943508,
+      longitude: 4.85309666406198,
       zoom: 8,
     },
     maxAdults: 4,
@@ -141,53 +141,55 @@ export const offersWithFavoriteStatus : Offer[] = [
   },
 ];
 
-export const offerWithFavoriteStatus : Offer = {
-  bedrooms: 2,
+export const offerWithFavoriteStatus: Offer =
+{
+  bedrooms: 3,
   city: {
     location: {
-      latitude: 52.370216,
-      longitude: 4.895168,
+      latitude: 52.3909553943508,
+      longitude: 4.85309666406198,
       zoom: 10,
     },
     name: City.Amsterdam,
   },
   description: 'A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam.',
-  goods: ['Heating', 'Washing machine', 'Dishwasher', 'Cable TV'],
+  goods: ['Heating', 'Kitchen', 'Cable TV', 'Washing machine', 'Coffee machine'],
   host: {
     avatarUrl: 'img/1.png',
-    id: 5,
+    id: 3,
     isPro: true,
     name: 'Angelina',
   },
   id: 1,
   images: ['img/1.png', 'img/2.png'],
   isFavorite: true,
-  isPremium: false,
+  isPremium: true,
   location: {
-    latitude: 52.35514938496378,
-    longitude: 4.673877537499948,
+    latitude: 52.3909553943508,
+    longitude: 4.85309666406198,
     zoom: 8,
   },
-  maxAdults: 3,
+  maxAdults: 4,
   previewImage: 'img/apartment-01.jpg',
-  price: 134,
-  rating: 4.9,
+  price: 122,
+  rating: 4.8,
   title: 'The First of example offer',
   type: 'apartment',
 };
 
-export const offerWithoutFavoriteStatus : Offer = {
+export const offerWithoutFavoriteStatus: Offer =
+{
   bedrooms: 3,
   city: {
     location: {
-      latitude: 52.370216,
-      longitude: 4.895168,
+      latitude: 52.3909553943508,
+      longitude: 4.85309666406198,
       zoom: 10,
     },
     name: City.Amsterdam,
   },
   description: 'A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam.',
-  goods: ['Heating', 'Washing machine'],
+  goods: ['Heating', 'Kitchen', 'Cable TV', 'Washing machine', 'Coffee machine'],
   host: {
     avatarUrl: 'img/1.png',
     id: 3,
@@ -199,19 +201,19 @@ export const offerWithoutFavoriteStatus : Offer = {
   isFavorite: false,
   isPremium: true,
   location: {
-    latitude: 52.35514938496378,
-    longitude: 4.673877537499948,
+    latitude: 52.3909553943508,
+    longitude: 4.85309666406198,
     zoom: 8,
   },
   maxAdults: 4,
   previewImage: 'img/apartment-01.jpg',
   price: 122,
   rating: 4.8,
-  title: 'The Second of example offer',
+  title: 'The First of example offer',
   type: 'apartment',
 };
 
-export const reviews : Review[] = [
+export const reviews: Review[] = [
   {
     comment: 'A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam.',
     date: '2020-05-01T14:13:56.000Z',

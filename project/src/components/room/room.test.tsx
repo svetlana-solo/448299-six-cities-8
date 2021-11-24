@@ -1,15 +1,15 @@
-import {Router} from 'react-router-dom';
-import {createMemoryHistory} from 'history';
-import {render, screen} from '@testing-library/react';
-import {Provider} from 'react-redux';
-import {configureMockStore} from '@jedmao/redux-mock-store';
+import { Router } from 'react-router-dom';
+import { createMemoryHistory } from 'history';
+import { render, screen } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import { configureMockStore } from '@jedmao/redux-mock-store';
 import Room from './room';
-import {offers, offerWithFavoriteStatus, reviews} from '../../utils/mocks';
-import {AuthorizationStatus} from '../../const';
-import {Action} from 'redux';
-import thunk, {ThunkDispatch} from 'redux-thunk';
-import {createAPI} from '../../services/api';
-import {State} from '../../types/state';
+import { offers, offerWithFavoriteStatus, reviews } from '../../utils/mocks';
+import { AuthorizationStatus } from '../../const';
+import { Action } from 'redux';
+import thunk, { ThunkDispatch } from 'redux-thunk';
+import { createAPI } from '../../services/api';
+import { State } from '../../types/state';
 
 const history = createMemoryHistory();
 jest.mock('react-router-dom', () => ({
@@ -22,25 +22,30 @@ jest.mock('react-router-dom', () => ({
 describe('Component: Room', () => {
   const onFakeUnauthorized = jest.fn();
   const onFakeError = jest.fn();
-  const api = createAPI(onFakeUnauthorized(),onFakeError());
+  const api = createAPI(onFakeUnauthorized(), onFakeError());
   const middlewares = [thunk.withExtraArgument(api)];
   const mockStore = configureMockStore<
-      State,
-      Action,
-      ThunkDispatch<State, typeof api, Action>
-    >(middlewares);
+    State,
+    Action,
+    ThunkDispatch<State, typeof api, Action>
+  >(middlewares);
 
   const store = mockStore({
-    USER: {authorizationStatus: AuthorizationStatus.Auth},
+    USER: { authorizationStatus: AuthorizationStatus.Auth },
     ROOM: {
       currentOffer: offerWithFavoriteStatus.id,
-      nearbyOffers: offers.map(({id}) => id),
+      nearbyOffers: offers.map(({ id }) => id),
       reviews,
+    },
+    DATA: {
+      offers: offers,
+      favoriteOffers: offers,
+      isDataLoaded: true,
     },
   });
 
   it('should render correctly', () => {
-    const {container} = render(
+    const { container } = render(
       <Provider store={store}>
         <Router history={history}>
           <Room />

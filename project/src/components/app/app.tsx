@@ -42,7 +42,7 @@ function App(): JSX.Element {
         <Room />
       </Route>
 
-      <Route path={AppRoute.Error}>
+      <Route>
         <Error />
       </Route>
     </Switch>
