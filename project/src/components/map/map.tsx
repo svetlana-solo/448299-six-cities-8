@@ -1,9 +1,9 @@
-import {useRef, useEffect} from 'react';
-import {Icon, Marker} from 'leaflet';
+import { useRef, useEffect } from 'react';
+import { Icon, Marker } from 'leaflet';
 import useMap from '../../hooks/useMap';
-import {Offer} from '../../types/offer';
-import {City, CityLocation} from '../../const';
-import {URL_MARKER_DEFAULT, URL_MARKER_CURRENT} from '../../const';
+import { Offer } from '../../types/offer';
+import { City, CityLocation } from '../../const';
+import { URL_MARKER_DEFAULT, URL_MARKER_CURRENT } from '../../const';
 import 'leaflet/dist/leaflet.css';
 
 type MapProps = {
@@ -26,7 +26,7 @@ const currentCustomIcon = new Icon({
 });
 
 function Map(props: MapProps): JSX.Element {
-  const {city, offers, selectedOffer, offerFromRoom} = props;
+  const { city, offers, selectedOffer, offerFromRoom } = props;
   const cityLocation = CityLocation[city];
 
   const mapRef = useRef(null);
@@ -34,14 +34,12 @@ function Map(props: MapProps): JSX.Element {
 
   useEffect(() => {
     if (map) {
-      map.flyTo([cityLocation.latitude, cityLocation.longitude],cityLocation.zoom);
+      map.flyTo([cityLocation.latitude, cityLocation.longitude], cityLocation.zoom);
       offers.forEach((offer) => {
         const marker = new Marker({
           lat: offer.location.latitude,
           lng: offer.location.longitude,
         });
-        //eslint-disable-next-line no-console
-        console.log(offer, selectedOffer);
         marker
           .setIcon(
             selectedOffer !== null && offer.id === selectedOffer
@@ -53,7 +51,7 @@ function Map(props: MapProps): JSX.Element {
     }
   }, [cityLocation, map, offers, selectedOffer]);
 
-  return <section className={offerFromRoom ? 'property__map map' : 'cities__map map'} style={{height: '100%'}} ref={mapRef}/>;
+  return <section className={offerFromRoom ? 'property__map map' : 'cities__map map'} style={{ height: '100%' }} ref={mapRef} />;
 }
 
 export default Map;
